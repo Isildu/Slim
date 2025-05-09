@@ -7,21 +7,38 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $app = AppFactory::create();
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+
 $app->get('/', function (Request $request, Response $response) {
     $htmlContent = "
-    <!DOCTYPE html>
-    <html lang='ca'>
-    <head>
-        <meta charset='UTF-8'>
-        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-        <title>Pàgina Principal</title>
-    </head>
-    <body>
-        <h1><a href='http://www.itb.cat' target='_BLANK'>Institut Tecnològic de Barcelona</a></h1>
-        <h3>Professors: Rai i David</h3>
-        <p>Visca el Giro!</p>
-    </body>
-    </html>
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Llista de Paraules</title>
+            <meta charset='UTF-8'>
+        </head>
+        <body>
+            <h1>Llista de Paraules</h1>
+            {% for fila in words %}
+                <div class='word-card'>
+                    <p>
+                        <strong>ID:</strong> {{ fila.item_id }}<br>
+                        <strong>Nom:</strong> {{ fila.item_text }}<br>
+                        <strong>Elements:</strong> {{ fila.elementos }}<br>
+                        <strong>Significat:</strong> {{ fila.meaning }}<br>
+                        <strong>Tipus:</strong> {{ fila.tipo }}
+                    </p>
+                    <div class='buttons'>
+                        <a class='modify-btn' href='../controller/modificarSiglas.php?id={{ fila.item_id }}'>Modificar</a>
+                        <a class='delete-btn' href='../controller/delete.php?id={{ fila.item_id }}'>Eliminar</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </body>
+        </html>
     ";
 
     $response->getBody()->write($htmlContent);
