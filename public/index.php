@@ -13,34 +13,45 @@ error_reporting(E_ALL);
 
 
 $app->get('/', function (Request $request, Response $response) {
-    $htmlContent = "
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Llista de Paraules</title>
-            <meta charset='UTF-8'>
-        </head>
-        <body>
-            <h1>Llista de Paraules</h1>
-            {% for fila in words %}
-                <div class='word-card'>
-                    <p>
-                        <strong>ID:</strong> {{ fila.item_id }}<br>
-                        <strong>Nom:</strong> {{ fila.item_text }}<br>
-                        <strong>Elements:</strong> {{ fila.elementos }}<br>
-                        <strong>Significat:</strong> {{ fila.meaning }}<br>
-                        <strong>Tipus:</strong> {{ fila.tipo }}
-                    </p>
-                    <div class='buttons'>
-                        <a class='modify-btn' href='../controller/modificarSiglas.php?id={{ fila.item_id }}'>Modificar</a>
-                        <a class='delete-btn' href='../controller/delete.php?id={{ fila.item_id }}'>Eliminar</a>
-                    </div>
-                </div>
-            {% endfor %}
-        </body>
-        </html>
-    ";
+    // Simulamos datos para $words (reemplaza con datos reales si ya los tienes)
+    $words = [
+        [
+            'item_id' => 1,
+            'item_text' => 'Exemple',
+            'elementos' => 'ABC',
+            'meaning' => 'Significat',
+            'tipo' => 'Nom'
+        ]
+    ];
 
+    // Captura de salida con ob_start()
+    ob_start();
+    ?>
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Llista de Paraules</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h1>Llista de Paraules</h1>
+        <?php foreach ($words as $fila): ?>
+            <div class="word-card">
+                <p>
+                    <strong>ID:</strong> <?= htmlspecialchars($fila['item_id']) ?><br>
+                    <strong>Nom:</strong> <?= htmlspecialchars($fila['item_text']) ?><br>
+                    <strong>Elements:</strong> <?= htmlspecialchars($fila['elementos']) ?><br>
+                    <strong>Significat:</strong> <?= htmlspecialchars($fila['meaning']) ?><br>
+                    <strong>Tipus:</strong> <?= htmlspecialchars($fila['tipo']) ?>
+                </p>
+            </div>
+        <?php endforeach; ?>
+    </body>
+    </html>
+    <?php
+
+    $htmlContent = ob_get_clean(); // Guarda el HTML generado
     $response->getBody()->write($htmlContent);
     return $response->withHeader('Content-Type', 'text/html');
 });
